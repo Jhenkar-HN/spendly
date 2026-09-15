@@ -43,18 +43,12 @@ jobs:
 
       - name: Build Release APK
         run: |
-          flutter build apk --release 2>&1 | tee build.log || (echo "=== GRADLE FAILURE ===" && tail -n 120 build.log && exit 1)
+          flutter build apk --release
+          find build -name "*.apk"
 
       - name: Upload Release APK
-        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: spendly-app-release
-          path: build/app/outputs/flutter-apk/app-release.apk
-
-      - name: Upload Build Log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-log
-          path: build.log
+          path: build/**/outputs/**/*.apk
+          if-no-files-found: error
