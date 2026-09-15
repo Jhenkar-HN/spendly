@@ -27,6 +27,9 @@ jobs:
           channel: 'stable'
           cache: true
 
+      - name: Ensure Android platform scaffolding
+        run: flutter create . --platforms=android --org=com.spendly
+
       - name: Get Dependencies
         run: flutter pub get
 
