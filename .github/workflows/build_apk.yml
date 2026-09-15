@@ -43,12 +43,25 @@ jobs:
 
       - name: Build Release APK
         run: |
-          flutter build apk --release
-          find build -name "*.apk"
+          set +e
+          flutter build apk --release --no-tree-shake-icons > build.log 2>&1
+          STATUS=$?
+          if [ $STATUS -ne 0 ]; then
+            echo "### ❌ Build Failed (Exit Code $STATUS)" >> $GITHUB_STEP_SUMMARY
+            echo '```text' >> $GITHUB_STEP_SUMMARY
+            tail -n 100 build.log >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            cat build.log
+            exit $STATUS
+          fi
+          echo "### ✅ Build Succeeded!" >> $GITHUB_STEP_SUMMARY
+
+      - name: Locate APK files
+        run: find build -name "*.apk"
 
       - name: Upload Release APK
         uses: actions/upload-artifact@v4
         with:
           name: spendly-app-release
-          path: build/**/outputs/**/*.apk
+          path: build/app/outputs/**/*.apk
           if-no-files-found: error
