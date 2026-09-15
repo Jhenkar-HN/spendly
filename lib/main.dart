@@ -61,7 +61,7 @@ class SpendlyApp extends StatelessWidget {
         centerTitle: false,
         systemOverlayStyle: SystemUiOverlayStyle.dark,
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: Colors.white,
         elevation: 0,
         shape: RoundedRectangleBorder(
@@ -92,7 +92,7 @@ class SpendlyApp extends StatelessWidget {
         centerTitle: false,
         systemOverlayStyle: SystemUiOverlayStyle.light,
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: const Color(0xFF1E2126),
         elevation: 0,
         shape: RoundedRectangleBorder(
