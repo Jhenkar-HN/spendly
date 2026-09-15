@@ -27,6 +27,9 @@ jobs:
           channel: 'stable'
           cache: true
 
+      - name: Accept Android Licenses
+        run: yes | flutter doctor --android-licenses || true
+
       - name: Generate Official Android Platform Scaffolding
         run: |
           rm -rf android
@@ -39,10 +42,19 @@ jobs:
         run: flutter test
 
       - name: Build Release APK
-        run: flutter build apk --release
+        run: |
+          flutter build apk --release 2>&1 | tee build.log || (echo "=== GRADLE FAILURE ===" && tail -n 120 build.log && exit 1)
 
       - name: Upload Release APK
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: spendly-app-release
           path: build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Upload Build Log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: build.log
