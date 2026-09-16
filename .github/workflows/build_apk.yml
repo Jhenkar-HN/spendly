@@ -74,6 +74,14 @@ jobs:
           git commit -m "Auto-captured build failure log [skip ci]"
           git push origin build-failure -f
 
+      - name: Prepare Spendly APK
+        if: success()
+        run: |
+          APK_DIR="build/app/outputs/flutter-apk"
+          if [ -f "$APK_DIR/app-release.apk" ]; then
+            cp "$APK_DIR/app-release.apk" "$APK_DIR/Spendly.apk"
+          fi
+
       - name: Upload Release APK
         if: success()
         uses: actions/upload-artifact@v4
@@ -100,14 +108,14 @@ jobs:
         run: |
           TAG="v${{ steps.get_version.outputs.version }}"
           TITLE="Spendly $TAG"
-          APK_PATH="build/app/outputs/flutter-apk/app-release.apk"
+          APK_PATH="build/app/outputs/flutter-apk/Spendly.apk"
 
           if [ ! -f "$APK_PATH" ]; then
-            APK_PATH=$(find build/app/outputs -name "app-release.apk" -type f | head -n 1)
+            APK_PATH=$(find build/app/outputs -name "Spendly.apk" -o -name "app-release.apk" -type f | head -n 1)
           fi
 
           if [ ! -f "$APK_PATH" ]; then
-            echo "Error: Release APK not found at $APK_PATH"
+            echo "Error: Release APK not found"
             exit 1
           fi
 
